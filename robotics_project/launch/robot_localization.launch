@@ -1,0 +1,43 @@
+<launch>
+
+	<param name="/use_sim_time" value="true"/>
+
+		
+	<!-- these are the tfs that Mentasti has eliminated from old bags -->
+	<!--
+	<node pkg="tf2_ros" type="static_transform_publisher" name="camera_link_tf" args="0 0 0 0 0  0 1 camera_pose_frame camera_link" />
+	<node pkg="tf2_ros" type="static_transform_publisher" name="camera_gyro_frame_tf" args="0 0 0 0 0 0 1 camera_link camera_gyro_frame" />
+	<node pkg="tf2_ros" type="static_transform_publisher" name="camera_accel_frame_tf" args="0 0 0 0 0 0 1 camera_link camera_accel_frame" />
+	<node pkg="tf2_ros" type="static_transform_publisher" name="camera_gyro_optical_frame_tf" args="0 0 0 0 0 0 1 camera_gyro_frame camera_gyro_optical_frame" />
+	<node pkg="tf2_ros" type="static_transform_publisher" name="camera_accel_optical_frame_tf" args="0 0 0 0 0 0 1 camera_accel_frame camera_accel_optical_frame" />
+    -->
+	<!--  ************************************************************************ --> 
+
+	
+	<node pkg="imu_filter_madgwick" type="imu_filter_node"      name="imu_filter_madgwick_node" output="screen">  
+	    <remap from="imu/data_raw" to="mavros/imu/data_raw" />  
+	    <param name="publish_tf" value="false"/>
+	    <param name="use_mag" value="false"/> 
+	    <param name="use_magnetic_field_msg" value="false"/>
+	    <param name="zeta" value="0.00"/>
+	    <param name="gain" value="0.02"/>  
+	</node>
+    
+
+	
+	<node pkg="robot_localization" type="ekf_localization_node" name="ekf_node_odom" clear_params="true">
+    	<rosparam command="load" file="$(find robotics_project)/params/ekf_template_odom.yaml" />
+	</node>
+
+	
+	<node pkg="tf2_ros" type="static_transform_publisher" name="odom_scoutodom_tf" args="0 0 0 0 0  0 1 base_link scout/odom" />
+	<node pkg="tf2_ros" type="static_transform_publisher" name="odom_cameraodom_tf" args="0 0 0 0 0  0 1 odom camera_odom_frame" /> 	
+
+   <!--  Placeholder for output topic remapping
+     You either remap on this node, the node that takes in the data, or both!
+     <remap from="odometry/filtered" to=""/>
+     <remap from="accel/filtered" to=""/>
+     -->
+
+
+</launch>
