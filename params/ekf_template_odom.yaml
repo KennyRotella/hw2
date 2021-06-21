@@ -3,29 +3,29 @@ odom_frame: odom            # Defaults to "odom" if unspecified
 base_link_frame: base_link  # Defaults to "base_link" if unspecified
 world_frame: odom           # Defaults to the value of odom_frame if unspecified
 
-frequency: 4
+frequency: 30
 sensor_timeout: 0.1
 two_d_mode: true  
 publish_tf: true
 transform_time_offset: 0.5
 transform_timeout: 0.1
 
-odom0: camera/odom/sample
-imu0: camera/gyro/sample
+odom0: odom
+
+imu0: imu/data
 
 
-
-odom0_config: [true,  true,  false,
-               false, false, true,
+odom0_config: [false,  false,  false,
+               false, false, false,
                true, false, false,
                false, false, true,
                false, false, false]
 
 imu0_config: [ false,  false,  false,
-               true, true, true,
                false, false, false,
-               true, true, false,
-               false, false, false]
+               false, false, false,
+               false, false, true,
+               true, false, false]
 
 odom0_differential: false
 imu0_differential: false

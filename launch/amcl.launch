@@ -1,0 +1,65 @@
+<launch>
+  <arg name="use_map_topic"   default="true"/>
+  <arg name="scan_topic"      default="scan"/> 
+  <arg name="initial_pose_x"  default="0.0"/>
+  <arg name="initial_pose_y"  default="0.0"/>
+  <arg name="initial_pose_a"  default="0.0"/>
+  <arg name="odom_frame_id"   default="scout/odom"/>
+  <arg name="base_frame_id"   default="scout/base_link"/>
+  <arg name="global_frame_id" default="map"/>
+
+  <node pkg="amcl" type="amcl" name="amcl">
+    <param name="use_map_topic"             value="$(arg use_map_topic)"/>
+    <!-- Publish scans from best pose at a max of 10 Hz -->
+    <param name="odom_model_type"           value="diff"/>
+    <param name="gui_publish_rate"          value="10.0"/>
+    <param name="laser_max_beams"             value="60"/>
+    <param name="laser_max_range"           value="12.0"/> 
+    <param name="min_particles"             value="500"/>
+    <param name="max_particles"             value="2000"/>
+    <!-- It is important to know that if amcl is not working properly, the solution is not simply increase the number of particles. We can try it but this increase a lot the computation required by the system. If we have problem with localization, maybe it is due to a low number of particles and we can change it but remember that it is not the only one parameter. Usually these numbers are good in every scenario and a good tradeoff between good localization and computation -->
+
+    <!-- Parameters for error modeling, in particular how the error of the odometry is modeled. So we can use some data usually based on the datasheet of the robot or on covariance we get. If system is not working we may take a look at how good is the odometry, what are the covariances of the odometry we are computing and maybe fine tune all of these parameters  -->
+    <param name="kld_err"                   value="0.05"/>
+    <param name="kld_z"                     value="0.99"/>
+    <param name="odom_alpha1"               value="0.2"/>
+    <param name="odom_alpha2"               value="0.2"/>
+    <param name="odom_alpha3"               value="0.2"/>
+    <param name="odom_alpha4"               value="0.2"/>
+    <param name="odom_alpha5"               value="0.1"/>
+    <!--_________________________________________________-->
+
+    <!--laser modeling. amcl needs to know how accurate is the laser to properly work to compute its position. Look in datasheet of the laser-->
+    <param name="laser_z_hit"               value="0.5"/>
+    <param name="laser_z_short"             value="0.05"/>
+    <param name="laser_z_max"               value="0.05"/>
+    <param name="laser_z_rand"              value="0.5"/>
+    <param name="laser_sigma_hit"           value="0.2"/>
+    <param name="laser_lambda_short"        value="0.1"/>
+    <!--_________________________________________________-->
+
+    <param name="laser_model_type"          value="likelihood_field"/>
+    <param name="laser_likelihood_max_dist" value="2.0"/>
+
+    <!--other params to tune, mainly based on how accurate is our odometry. This is done simply testing out the system and trying to understand what is the maximum distance we can go with our odometry with an acceptable error. Rotation are the BIGGEST issue and won't be accurate in the project. What we do usually is to test out some values, try to undertsand if they are drifting too much on the odometry and we lower those values if there is too drift-->
+    <param name="update_min_d"              value="0.25"/>
+    <param name="update_min_a"              value="0.2"/>
+    <!--_________________________________________________-->
+
+    <param name="odom_frame_id"             value="$(arg odom_frame_id)"/> 
+    <param name="base_frame_id"             value="$(arg base_frame_id)"/> 
+    <param name="global_frame_id"           value="$(arg global_frame_id)"/>
+
+    <!--It is when we resample particles in our filter. We can use higher values which means to resample at lower rate, but we load the system less because we have less particles to compute. This parameter should be fine tuned based on how accurate is our movement and what is the load of the system. If it is not loaded and we have pure localization it can be increased-->
+    <param name="resample_interval"         value="1"/>
+    <!--_________________________________________________-->
+    
+    <param name="transform_tolerance"       value="1.0"/>
+    <param name="recovery_alpha_slow"       value="0.0"/>
+    <param name="recovery_alpha_fast"       value="0.0"/>
+    <param name="initial_pose_x"            value="$(arg initial_pose_x)"/>
+    <param name="initial_pose_y"            value="$(arg initial_pose_y)"/>
+    <param name="initial_pose_a"            value="$(arg initial_pose_a)"/>
+    <remap from="scan"                      to="$(arg scan_topic)"/>
+  </node>
+</launch>
