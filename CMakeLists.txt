@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0.2)
-project(robotics_project)
+project(hw2)
 
 ## Find catkin and any catkin packages
 find_package(catkin REQUIRED COMPONENTS 
