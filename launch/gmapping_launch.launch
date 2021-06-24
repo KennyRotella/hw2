@@ -1,13 +1,16 @@
 <launch>
-	<!-- how to use this launch file: import launch file in your package, then launch the launchfile and then launch the bag you want to use for recreate the map. At the end save the map-->
+	<!-- how to use this launch file: after launch play the bag you want to use to create the map. At the end save the map -->
 
 	<!-- use bag with clock option and this parameter -->
 	<param name="/use_sim_time" value="true"/>
 
-	<!-- static tf transform to publish -->
+	<!-- 90° counterclock wise in the yaw (z-axis) between scout odom end laser -->
 	<node pkg="tf" type="static_transform_publisher" name="laser_tf" args="0 0 0  1.57079632679 0 0 scout/base_link laser 100" />
 
- 	<!-- Gmapping -->
+ 	<!-- **************** Gmapping **************** -->
   	<include file="$(find hw2)/launch/gmapping_launch.xml"/>
+
+  	<!-- **************** Visualisation **************** -->
+	<node name="rviz" pkg="rviz" type="rviz" args="-d $(find hw2)/rviz/robot_gmap.rviz"/>
 
 </launch>
