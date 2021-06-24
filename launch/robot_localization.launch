@@ -1,20 +1,8 @@
 <launch>
 
 	<param name="/use_sim_time" value="true"/>
-
 		
-	<!-- these are the tfs that Mentasti has eliminated from old bags -->
-	<!--
-	<node pkg="tf2_ros" type="static_transform_publisher" name="camera_link_tf" args="0 0 0 0 0  0 1 camera_pose_frame camera_link" />
-	<node pkg="tf2_ros" type="static_transform_publisher" name="camera_gyro_frame_tf" args="0 0 0 0 0 0 1 camera_link camera_gyro_frame" />
-	<node pkg="tf2_ros" type="static_transform_publisher" name="camera_accel_frame_tf" args="0 0 0 0 0 0 1 camera_link camera_accel_frame" />
-	<node pkg="tf2_ros" type="static_transform_publisher" name="camera_gyro_optical_frame_tf" args="0 0 0 0 0 0 1 camera_gyro_frame camera_gyro_optical_frame" />
-	<node pkg="tf2_ros" type="static_transform_publisher" name="camera_accel_optical_frame_tf" args="0 0 0 0 0 0 1 camera_accel_frame camera_accel_optical_frame" />
-    -->
-	<!--  ************************************************************************ --> 
-
-		
-	<node pkg="imu_filter_madgwick" type="imu_filter_node"      name="imu_filter_madgwick_node" output="screen">  
+	<node pkg="imu_filter_madgwick" type="imu_filter_node" name="imu_filter_madgwick_node" output="screen">  
 	    <remap from="imu/data_raw" to="mavros/imu/data_raw" />  
 	    <param name="publish_tf" value="false"/>
 	    <param name="use_mag" value="false"/> 
@@ -25,16 +13,11 @@
 
 	
 	<node pkg="robot_localization" type="ekf_localization_node" name="ekf_node_odom" clear_params="true">
-    	<rosparam command="load" file="$(find robotics_project)/params/ekf_template_odom.yaml" />
+    	<rosparam command="load" file="$(find hw2)/params/ekf_template_odom.yaml" />
 	</node>
 
-	
 	<node pkg="tf2_ros" type="static_transform_publisher" name="scoutodom_odom_tf" args="0 0 0 0 0  0 1 scout/odom odom" />
 	<node pkg="tf2_ros" type="static_transform_publisher" name="scoutbl_bl_tf" args="0 0 0 0 0  0 1 scout/base_link base_link" />
-
-	<!--
-	<node pkg="tf2_ros" type="static_transform_publisher" name="odom_cameraodom_tf" args="0 0 0 0 0  0 1 odom camera_odom_frame" /> 	
-	-->
 
    <!--  Placeholder for output topic remapping
      You either remap on this node, the node that takes in the data, or both!
@@ -44,7 +27,7 @@
 
 
   <!-- Name of the map to use and initial position -->
-  <arg name="map_file"       default="$(find robotics_project)/maps/map_bag_1_calibrated.yaml"/> 
+  <arg name="map_file"       default="$(find hw2)/maps/map_bag2.yaml"/> 
   <arg name="initial_pose_x" default="0.0"/>
   <arg name="initial_pose_y" default="0.0"/>
   <arg name="initial_pose_a" default="0.0"/>
@@ -53,9 +36,8 @@
     <param name="frame_id" value="map"/>
   </node>  
 
-
   <!--  ****** amcl *****  -->
-  <include file="$(find robotics_project)/launch/amcl.launch">
+  <include file="$(find hw2)/launch/amcl.launch">
     <arg name="scan_topic" value="scan"/>
     <arg name="use_map_topic" value="true"/>
     <arg name="initial_pose_x" value="$(arg initial_pose_x)"/>
@@ -65,6 +47,7 @@
 
   <node pkg="tf" type="static_transform_publisher" name="laser_tf" args="0 0 0 0 0 0.7071068 0.7071068 scout/base_link laser 100" />
 
-
+  <!-- **************** Visualisation **************** -->
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find hw2)/rviz/robot_local.rviz"/>
     
 </launch>
