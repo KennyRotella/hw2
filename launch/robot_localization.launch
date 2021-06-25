@@ -30,7 +30,7 @@
 	</node>  
 
 	<!--  ****** amcl *****  -->
-	<include file="$(find hw2)/launch/amcl.launch">
+	<include file="$(find hw2)/launch/amcl.xml">
 		<arg name="scan_topic" value="scan"/>
 		<arg name="use_map_topic" value="true"/>
 		<arg name="initial_pose_x" value="$(arg initial_pose_x)"/>
