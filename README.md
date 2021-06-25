@@ -33,8 +33,10 @@ src:
     roslaunch hw2 robot_localization.launch
     rosbag play --clock 1.bag [or 3.bag]
 
--decisions for setting the config matrix
+-small report to explain the sensors choice (why you used a specific sensor in
+robot localization, and how you setup the config matrix, why some true and
+some false)
   we used imu from the Pixhawk, the first row is false since it is a accel/gyro, we set the yaw angular velocity and since it is a skid steering robot we set only the x acceleration (not y accel) to true (in this scenario the robot does not drift too much). We used also the scout odom, we initially set the x and yaw velocities and got a good result, we then used directly the x,y positions and yaw orientation from scout/odom and the covariance got better.
 
--info we think are important/interesting
+-info you think are important/interesting
   we tried to use also the imu from the camera, in the src there is a node for republish it, we did not notice any improvement.
